@@ -24,8 +24,7 @@ app.get('/', (req, res) => {
   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
   client.connect(err => {
     const newsCollection = client.db("dailyNews").collection("news");
-    const newsList = client.db("dailyNews").collection("list");
-    // const adminCollection = client.db("quickFix").collection("admin");
+    const adminCollection = client.db("dailyNews").collection("admin");
 
     app.get('/news', (req, res) => {
       newsCollection.find()
@@ -44,23 +43,6 @@ app.get('/', (req, res) => {
         })
       })
 
-      app.post('/addOrder', (req, res) =>{
-        const newOrder = req.body;
-        console.log('adding new order:', newOrder);
-        newsList.insertOne(newOrder)
-        .then(result => {
-          console.log('inserted count', result.insertedCount)
-          res.send(result.insertedCount > 0)
-        })
-      })
-
-
-      app.get('/newsList', (req, res) => {
-        newsList.find()
-        .toArray((err, list) => {
-          res.send(list)
-        })
-      })
 
 
       app.post('/addAdmin', (req, res) =>{
@@ -90,25 +72,6 @@ app.get('/', (req, res) => {
         .toArray((err, items) => {
           console.log(items)
           res.send(items)
-        })
-      })
-
-
-      app.patch('/processStatus', (req, res) => {
-        const status = req.query.status;
-        const id = req.query.id;
-        console.log(req.query);
-        newsList.updateOne({_id: ObjectId(id)}, { $set : {status: status}})
-        .then(result => {
-          res.send(result.modifiedCount > 0);
-        })
-      })
-
-      app.delete('/deleteService/:id', (req, res) => {
-        const id = req.params.id;
-        newsCollection.findOneAndDelete({_id: ObjectId(id)})
-        .then(result => {
-          res.send(result.deletedCount > 0);
         })
       })
 
