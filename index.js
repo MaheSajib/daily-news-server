@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
   client.connect(err => {
     const newsCollection = client.db("dailyNews").collection("news");
     const newsList = client.db("dailyNews").collection("list");
-    const adminCollection = client.db("quickFix").collection("admin");
+    // const adminCollection = client.db("quickFix").collection("admin");
 
     app.get('/news', (req, res) => {
       newsCollection.find()
